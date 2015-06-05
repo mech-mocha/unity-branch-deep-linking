@@ -4,13 +4,7 @@ using System.Collections.Generic;
 
 public class MainMenu : MonoBehaviour {
     public Texture backgroundTexture;
-
-    public void OnGUI() {
-        GUI.DrawTexture(new Rect (0, 0, Screen.width, Screen.height), backgroundTexture);
-
-        _AddRefreshShortUrlButton();
-    }
-
+    
     public void Start() {
         Branch.initSession(delegate(System.Collections.Generic.Dictionary<string, object> parameters, string error) {
             if (error != null) {
@@ -20,6 +14,17 @@ public class MainMenu : MonoBehaviour {
                 Debug.Log("InitSession succeeded with params: " + MiniJSON.Json.Serialize(parameters));
             }
         });
+
+        _labelStyle = new GUIStyle();
+        _labelStyle.normal.textColor = Color.black;
+        _labelStyle.fontSize = 36;
+    }
+
+    public void OnGUI() {
+        GUI.DrawTexture(new Rect (0, 0, Screen.width, Screen.height), backgroundTexture);
+
+        _UpdateUrlLabelIfPresent();
+        _AddRefreshShortUrlButton();
     }
 
     private void _AddRefreshShortUrlButton() {
@@ -43,9 +48,18 @@ public class MainMenu : MonoBehaviour {
                 }
                 else {
                     Debug.Log("Retrieved url: " + url);
-                    GUI.Label(new Rect(Screen.width * 0.125f, Screen.height * 0.125f, Screen.width * 0.75f, Screen.height * 0.1f), url);
+                    _url = url;
                 }
            });
         }
     }
+
+    private void _UpdateUrlLabelIfPresent() {
+        if (_url != null) {
+            GUI.Label(new Rect(Screen.width * 0.125f, Screen.height * 0.125f, Screen.width * 0.75f, Screen.height * 0.1f), _url, _labelStyle);
+        }
+    }
+
+    private string _url;
+    private GUIStyle _labelStyle;
 }
