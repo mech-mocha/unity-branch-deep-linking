@@ -350,14 +350,14 @@ public class Branch : MonoBehaviour {
 
 	#region Singleton
 
+    private static Branch m_Instance = null;
     public void Awake() {
-		var olderBranch = FindObjectOfType<Branch>();
-
-		if (olderBranch != null && olderBranch != this) {
-			// someone's already here!
-			Destroy(gameObject);
-			return;
-		}
+        if (m_Instance != null) {
+            // someone's already here!
+            Destroy(gameObject);
+            return;
+        }
+        m_Instance = this;
 
         name = "Branch";
         DontDestroyOnLoad(gameObject);
